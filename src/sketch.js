@@ -27,6 +27,7 @@ function setup() {
 	ballSprite.height = ballImg.height;
 	ballSprite.width = ballImg.width;
 	ballSprite.d = ballImg.height;
+	ballSprite.addImage(ballImg);
 
 	playerImg = loadImage('./public/robot.png');	
 	playerImg.resize(30*cmToPx, 30*cmToPx);
@@ -34,6 +35,8 @@ function setup() {
 	playerSprite.height = playerImg.height;
 	playerSprite.width = playerImg.width;
 	playerSprite.d = playerImg.height;
+	playerSprite.addAnimation(playerImg);
+	playerSprite.rotation = radians(90);
 
 	// walls
 	// top
@@ -56,11 +59,11 @@ function keyPressed() {
 		ballSprite.pos = {x: bgWidthPx/2, y: bgHeightPx/2};
 		ballSprite.vel = {x: 0, y: 0};
 		ballSprite.acc = {x: 0, y: 0};
-		ballSprite.ang = 0;
+		ballSprite.rotateTo(0, 15);
 		playerSprite.pos = {x: bgWidthPx/2, y: bgHeightPx/2};
 		playerSprite.vel = {x: 0, y: 0};
 		playerSprite.acc = {x: 0, y: 0};
-		playerSprite.ang = 0;
+		playerSprite.rotateTo(0, 15);
 	}
 }
 
@@ -72,22 +75,18 @@ function draw() {
 	// simulation stuff
 	image(bg, 0, 0);
 
-	ballSprite.draw();
 	ballImg.resize(ballSprite.width, ballSprite.height)
-	image(ballImg, ballSprite.x-ballSprite.width/2, ballSprite.y-ballSprite.height/2);
 
 	if (mouse.presses()) {
 		playerSprite.moveTo(mouse, 8);
 	}
-	if (kb.presses('ArrowLeft')) {
-		playerSprite.rotate(-5);
-	} else if (kb.presses('ArrowRight')) {
-		playerSprite.rotate(5);
-	}
-	playerSprite.draw();
-	playerImg.resize(playerSprite.width, playerSprite.height)
-	image(playerImg, playerSprite.x-playerSprite.width/2, playerSprite.y-playerSprite.height/2);
 
+	// rotate the player to face 90 degrees from the ball
+	playerSprite.rotateTowards(ballSprite, 0.1, 90);
+
+	playerImg.resize(playerSprite.width, playerSprite.height);
+
+	drawSprites();
 	// dev stuff
 	drawDebugInfo();
 }
