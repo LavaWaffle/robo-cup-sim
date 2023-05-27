@@ -1,52 +1,34 @@
 let bg;
 
-let ballImg;
-let ballSprite;
+let ball = new Ball();
 
-let playerImg;
-let playerSprite;
+let robot = new Robot();
+
+let walls;
 
 let drawTime = 0;
-// field is 182cm (580px) by 243cm (775px)
-// ratio1: 3.18681318681
-// ratio2: 3.18930041152
-const cmToPx = 3.18805679916;
-const bgWidthPx = 580;
-const bgHeightPx = 775;
+
+function preload() {
+	bg = loadImage('./public/field.png');
+	ball.preload();
+	robot.preload();
+}
+
 function setup() {
 	console.log("🚀 - Setup initialized - P5 is running");
 
 	createCanvas(windowWidth, windowHeight)
 	rectMode(CENTER).noFill().frameRate(30);
 
-	bg = loadImage('./public/field.png');
+	ball.setup();
 
-	ballImg = loadImage('./public/ball.png');
-	ballImg.resize(7.4*cmToPx, 7.4*cmToPx);
-	ballSprite = new Sprite(bgWidthPx/2, bgHeightPx/2);
-	ballSprite.height = ballImg.height;
-	ballSprite.width = ballImg.width;
-	ballSprite.d = ballImg.height;
-	ballSprite.addImage(ballImg);
+	robot.setup();
 
-	playerImg = loadImage('./public/robot.png');	
-	playerImg.resize(30*cmToPx, 30*cmToPx);
-	playerSprite = new Sprite(bgWidthPx/2, bgHeightPx/2);
-	playerSprite.height = playerImg.height;
-	playerSprite.width = playerImg.width;
-	playerSprite.d = playerImg.height;
-	playerSprite.addAnimation(playerImg);
-	playerSprite.rotation = radians(90);
-
-	// walls
-	// top
-	new Sprite(0, 0, bgWidthPx*2, 1, 'static');
-	// left
-	new Sprite(0, 0, 1, bgHeightPx*2, 'static');
-	// bottom
-	new Sprite(0, bgHeightPx, bgWidthPx*2, 1, 'static');
-	// right
-	new Sprite(bgWidthPx, 0, 1, bgHeightPx*2, 'static');
+	// walls (top right and bottom)
+	walls = new Sprite([[0,0], [BG_WIDTH_PX,0], [BG_WIDTH_PX,BG_HEIGHT_PX], [0,BG_HEIGHT_PX]]);
+	walls.collider = 'static';
+	// left wall
+	new Sprite([[0,0], [0,BG_HEIGHT_PX]]).collider = 'static';
 }
 
 // p5 WILL AUTO RUN THIS FUNCTION IF THE BROWSER WINDOW SIZE CHANGES
@@ -56,14 +38,8 @@ function windowResized() {
 
 function keyPressed() {
 	if (key == 'r') {
-		ballSprite.pos = {x: bgWidthPx/2, y: bgHeightPx/2};
-		ballSprite.vel = {x: 0, y: 0};
-		ballSprite.acc = {x: 0, y: 0};
-		ballSprite.rotateTo(0, 15);
-		playerSprite.pos = {x: bgWidthPx/2, y: bgHeightPx/2};
-		playerSprite.vel = {x: 0, y: 0};
-		playerSprite.acc = {x: 0, y: 0};
-		playerSprite.rotateTo(0, 15);
+		ball.reset();
+		robot.reset();
 	}
 }
 
@@ -75,16 +51,7 @@ function draw() {
 	// simulation stuff
 	image(bg, 0, 0);
 
-	ballImg.resize(ballSprite.width, ballSprite.height)
-
-	if (mouse.presses()) {
-		playerSprite.moveTo(mouse, 8);
-	}
-
-	// rotate the player to face 90 degrees from the ball
-	playerSprite.rotateTowards(ballSprite, 0.1, 90);
-
-	playerImg.resize(playerSprite.width, playerSprite.height);
+	robot.onDraw(mouse, ball);
 
 	drawSprites();
 	// dev stuff
@@ -105,9 +72,9 @@ function drawDebugInfo() {
 	// draw mouse position
 	text("Mouse: " + mouse.x + ", " + mouse.y, 10, 60);
 	// draw player pos
-	text("Player: " + playerSprite.x.toFixed(2) + ", " + playerSprite.y.toFixed(2), 10, 80);
+	text("Player: " + robot.sprite.x.toFixed(2) + ", " + robot.sprite.y.toFixed(2), 10, 80);
 	// draw ball pos
-	text("Ball: " + ballSprite.x.toFixed(2) + ", " + ballSprite.y.toFixed(2), 10, 100);
+	text("Ball: " + ball.sprite.x.toFixed(2) + ", " + ball.sprite.y.toFixed(2), 10, 100);
 	// draw last key pressed
 	text("Last key pressed: " + key, 10, 120);
 }
