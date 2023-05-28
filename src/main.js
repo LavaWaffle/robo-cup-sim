@@ -45,6 +45,9 @@ function keyPressed() {
 	}
 }
 
+let blueGoals = 0;
+let orangeGoals = 0;
+
 function draw() {
 	clear();
 
@@ -52,8 +55,21 @@ function draw() {
 	background(255);
 	// background
 	image(bg, 0, 0);
+	// draw scores
+	textSize(32);
+	fill(0, 0, 255);
+	text("Blue: " + blueGoals, 10, 40);
+	fill(255, 165, 0);
+	text("Orange: " + orangeGoals, 10, 80);
 
 	robot.onDraw(mouse, ball);
+	// check if the ball is in the goal
+	if (blueGoal.onDraw(ball)) {
+		blueGoals++;
+	}
+	if (orangeGoal.onDraw(ball)) {
+		orangeGoals++;
+	}
 
 	drawSprites();
 	// dev stuff

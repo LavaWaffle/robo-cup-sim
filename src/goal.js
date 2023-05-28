@@ -19,7 +19,15 @@ class Goal {
 
         this.area.x += this.area.width/2;
         this.area.y += this.area.height/2;
-        this.area.shapeColor.setAlpha(0);
+        this.area.color.setAlpha(0);
         ballSprite.overlaps(this.area);
+    }
+
+    onDraw(ball) {
+        if (ball.sprite.overlaps(this.area)) {
+            ball.reset();
+            return true;
+        }
+        return false;
     }
 }
