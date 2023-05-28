@@ -4,7 +4,10 @@ let ball = new Ball();
 
 let robot = new Robot();
 
-let walls;
+let walls = new Walls();
+
+const blueGoal = new Goal('blue');
+const orangeGoal = new Goal('orange');
 
 let drawTime = 0;
 
@@ -24,11 +27,10 @@ function setup() {
 
 	robot.setup();
 
-	// walls (top right and bottom)
-	walls = new Sprite([[0,0], [BG_WIDTH_PX,0], [BG_WIDTH_PX,BG_HEIGHT_PX], [0,BG_HEIGHT_PX]]);
-	walls.collider = 'static';
-	// left wall
-	new Sprite([[0,0], [0,BG_HEIGHT_PX]]).collider = 'static';
+	walls.setup();
+	
+	blueGoal.setup(ball.sprite);
+	orangeGoal.setup(ball.sprite);
 }
 
 // p5 WILL AUTO RUN THIS FUNCTION IF THE BROWSER WINDOW SIZE CHANGES
@@ -48,7 +50,7 @@ function draw() {
 
 	drawTime = millis();
 	background(255);
-	// simulation stuff
+	// background
 	image(bg, 0, 0);
 
 	robot.onDraw(mouse, ball);
