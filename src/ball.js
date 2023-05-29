@@ -1,8 +1,11 @@
 class Ball {
+    static ball;
     img;
     sprite;
     
-    constructor() {}
+    constructor() {
+        Ball.ball = this;
+    }
 
     preload() {
         this.img = loadImage('./public/ball.png');
@@ -14,6 +17,8 @@ class Ball {
         this.sprite.height = this.img.height;
         this.sprite.width = this.img.width;
         this.sprite.d = this.img.height;
+        this.sprite.drag = 0.1;
+        this.sprite.rotationDrag = 1;
         this.sprite.addImage(this.img);
     }
 

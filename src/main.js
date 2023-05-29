@@ -2,7 +2,7 @@ let bg;
 
 let ball = new Ball();
 
-let robot = new Robot();
+let robot = new Robot(BG_WIDTH_PX/2, 185);
 
 let walls = new Walls();
 
