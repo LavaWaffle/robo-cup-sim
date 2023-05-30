@@ -2,7 +2,11 @@ let bg;
 
 let ball = new Ball();
 
-let robot = new Robot(BG_WIDTH_PX/2, 185);
+let blueRobot1 = new Robot("blue", BG_WIDTH_PX/2, 185);
+let blueRobot2 = new Robot("blue", 185, 185);
+let redRobot1 = new Robot("red", BG_WIDTH_PX/2, BG_HEIGHT_PX-185);
+let redRobot2 = new Robot("red", 185, BG_HEIGHT_PX-185);
+
 
 let walls = new Walls();
 
@@ -11,10 +15,15 @@ const orangeGoal = new Goal('orange');
 
 let drawTime = 0;
 
+let robotIndex = 0;
+
 function preload() {
 	bg = loadImage('./public/field.png');
 	ball.preload();
-	robot.preload();
+	blueRobot1.preload();
+	blueRobot2.preload();
+	redRobot1.preload();
+	redRobot2.preload();
 }
 
 function setup() {
@@ -25,7 +34,10 @@ function setup() {
 
 	ball.setup();
 
-	robot.setup();
+	blueRobot1.setup();
+	blueRobot2.setup();
+	redRobot1.setup();
+	redRobot2.setup();
 
 	walls.setup();
 	
@@ -41,7 +53,27 @@ function windowResized() {
 function keyPressed() {
 	if (key == 'r') {
 		ball.reset();
-		robot.reset();
+		Robot.robots.forEach(robot => {
+			robot.reset();
+		});
+	}
+
+	if (key == 'a') {
+		const newIndex = robotIndex - 1;
+		if (newIndex <= -1) {
+			robotIndex = Robot.robots.length-1;
+		} else {
+			robotIndex = newIndex;
+		}
+	}
+
+	if (key == 'd') {
+		const newIndex = robotIndex + 1;
+		if (newIndex >= Robot.robots.length) {
+			robotIndex = 0;
+		} else {
+			robotIndex = newIndex;
+		}
 	}
 }
 
@@ -62,7 +94,11 @@ function draw() {
 	fill(255, 165, 0);
 	text("Orange: " + orangeGoals, 10, 80);
 
-	robot.onDraw(mouse, ball);
+	blueRobot1.onDraw(robotIndex, mouse, ball);
+	blueRobot2.onDraw(robotIndex, mouse, ball);
+	redRobot1.onDraw(robotIndex, mouse, ball);
+	redRobot2.onDraw(robotIndex, mouse, ball);
+
 	// check if the ball is in the goal
 	if (blueGoal.onDraw(ball)) {
 		blueGoals++;
@@ -90,9 +126,11 @@ function drawDebugInfo() {
 	// draw mouse position
 	text("Mouse: " + mouse.x + ", " + mouse.y, 10, 60);
 	// draw player pos
-	text("Player: " + robot.sprite.x.toFixed(2) + ", " + robot.sprite.y.toFixed(2), 10, 80);
+	text("Player: " + blueRobot1.sprite.x.toFixed(2) + ", " + blueRobot1.sprite.y.toFixed(2), 10, 80);
 	// draw ball pos
 	text("Ball: " + ball.sprite.x.toFixed(2) + ", " + ball.sprite.y.toFixed(2), 10, 100);
 	// draw last key pressed
 	text("Last key pressed: " + key, 10, 120);
+	// draw robot index
+	text("Robot index: " + robotIndex, 10, 140);
 }
