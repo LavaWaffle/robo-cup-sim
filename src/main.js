@@ -20,10 +20,7 @@ let robotIndex = 0;
 function preload() {
 	bg = loadImage('./public/field.png');
 	ball.preload();
-	blueRobot1.preload();
-	blueRobot2.preload();
-	redRobot1.preload();
-	redRobot2.preload();
+	Robot.preloadAll();
 }
 
 function setup() {
@@ -34,10 +31,7 @@ function setup() {
 
 	ball.setup();
 
-	blueRobot1.setup();
-	blueRobot2.setup();
-	redRobot1.setup();
-	redRobot2.setup();
+	Robot.setupAll();
 
 	walls.setup();
 	
@@ -53,12 +47,10 @@ function windowResized() {
 function keyPressed() {
 	if (key == 'r') {
 		ball.reset();
-		Robot.robots.forEach(robot => {
-			robot.reset();
-		});
+		Robot.resetAll();
 	}
 
-	if (key == 'a') {
+	if (key == 'a' || key == 'ArrowLeft') {
 		const newIndex = robotIndex - 1;
 		if (newIndex <= -1) {
 			robotIndex = Robot.robots.length-1;
@@ -67,7 +59,7 @@ function keyPressed() {
 		}
 	}
 
-	if (key == 'd') {
+	if (key == 'd' || key == 'ArrowRight') {
 		const newIndex = robotIndex + 1;
 		if (newIndex >= Robot.robots.length) {
 			robotIndex = 0;
@@ -94,10 +86,7 @@ function draw() {
 	fill(255, 165, 0);
 	text("Orange: " + orangeGoals, 10, 80);
 
-	blueRobot1.onDraw(robotIndex, mouse, ball);
-	blueRobot2.onDraw(robotIndex, mouse, ball);
-	redRobot1.onDraw(robotIndex, mouse, ball);
-	redRobot2.onDraw(robotIndex, mouse, ball);
+	Robot.onDrawAll(robotIndex, mouse, ball);
 
 	// check if the ball is in the goal
 	if (blueGoal.onDraw(ball)) {

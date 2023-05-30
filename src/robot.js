@@ -22,6 +22,12 @@ class Robot {
         }
     }
 
+    static preloadAll() {
+        Robot.robots.forEach(robot => {
+            robot.preload();
+        });
+    }
+
     setup() {
         this.img.resize(22 * CM_TO_PX, 22 * CM_TO_PX);
         this.sprite = new Sprite(this.initialX, this.initialY);
@@ -33,11 +39,23 @@ class Robot {
         this.sprite.rotation = radians(90);
     }
 
+    static setupAll() {
+        Robot.robots.forEach(robot => {
+            robot.setup();
+        });
+    }
+
     reset() {
         this.sprite.pos = { x: this.initialX, y: this.initialY };
         this.sprite.vel = { x: 0, y: 0 };
         this.sprite.acc = { x: 0, y: 0 };
         this.sprite.rotateTo(0, 15);
+    }
+
+    static resetAll() {
+        Robot.robots.forEach(robot => {
+            robot.reset();
+        });
     }
 
     onDraw(robotIndex, mouse, ball) {
@@ -55,5 +73,11 @@ class Robot {
 
         // rotate the player to face 90 degrees from the ball
         this.sprite.rotateTowards(ball.sprite, 0.1, 90);
+    }
+
+    static onDrawAll(robotIndex, mouse, ball) {
+        Robot.robots.forEach(robot => {
+            robot.onDraw(robotIndex, mouse, ball);
+        });
     }
 }
