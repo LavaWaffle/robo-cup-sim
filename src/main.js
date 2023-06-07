@@ -45,12 +45,13 @@ function windowResized() {
 }
 
 function keyPressed() {
-	if (key == 'r') {
+	if (key === 'r') {
 		ball.reset();
 		Robot.resetAll();
+		Robot.robotDribbling = -1;
 	}
 
-	if (key == 'a' || key == 'ArrowLeft') {
+	if (key === 'a' || key === 'ArrowLeft') {
 		const newIndex = robotIndex - 1;
 		if (newIndex <= -1) {
 			robotIndex = Robot.robots.length-1;
@@ -59,13 +60,18 @@ function keyPressed() {
 		}
 	}
 
-	if (key == 'd' || key == 'ArrowRight') {
+	if (key === 'd' || key === 'ArrowRight') {
 		const newIndex = robotIndex + 1;
 		if (newIndex >= Robot.robots.length) {
 			robotIndex = 0;
 		} else {
 			robotIndex = newIndex;
 		}
+	}
+
+	if (key === 's') {
+		console.log("CALED");
+		Robot.dribbleAll(robotIndex);
 	}
 }
 
@@ -86,7 +92,7 @@ function draw() {
 	fill(255, 165, 0);
 	text("Orange: " + orangeGoals, 10, 80);
 
-	Robot.onDrawAll(robotIndex, mouse, ball);
+	Robot.onDrawAll(robotIndex, ball);
 
 	// check if the ball is in the goal
 	if (blueGoal.onDraw(ball)) {
@@ -119,7 +125,7 @@ function drawDebugInfo() {
 	// draw ball pos
 	text("Ball: " + ball.sprite.x.toFixed(2) + ", " + ball.sprite.y.toFixed(2), 10, 100);
 	// draw last key pressed
-	text("Last key pressed: " + key, 10, 120);
+	text("Last key pressed: " + '"' + key + '"', 10, 120);
 	// draw robot index
 	text("Robot index: " + robotIndex, 10, 140);
 	var pi = Math.PI;
