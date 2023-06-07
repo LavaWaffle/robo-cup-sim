@@ -31,7 +31,7 @@ function setup() {
 
 	ball.setup();
 
-	Robot.setupAll();
+	Robot.setupAll(ball);
 
 	walls.setup();
 	

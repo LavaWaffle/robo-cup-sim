@@ -32,7 +32,7 @@ class Robot {
         });
     }
 
-    setup() {
+    setup(ball) {
         this.img.resize(22 * CM_TO_PX, 22 * CM_TO_PX);
         this.sprite = new Sprite(this.initialX, this.initialY);
         this.sprite.height = this.img.height;
@@ -42,15 +42,17 @@ class Robot {
         this.sprite.addImage(this.img);
         this.sprite.rotation = radians(90);
         // IGNORE THE X Y COORDS OF THE DRIBBLERS, JUST RANDO VALUES
-        this.frontDribbler = new Sprite(this.initialX + 0, this.initialY + -35, 30, 20);
+        this.frontDribbler = new Sprite(this.initialX + 0, this.initialY + -35, this.dribblerWidth, this.dribblerHeight);
         this.sprite.overlaps(this.frontDribbler);
-        this.backDribbler = new Sprite(this.initialX + 0, this.initialY + 35, 30, 20);
+        this.frontDribbler.overlaps(ball.sprite);
+        this.backDribbler = new Sprite(this.initialX + 0, this.initialY + 35, this.dribblerWidth, this.dribblerHeight);
         this.sprite.overlaps(this.backDribbler);
+        this.backDribbler.overlaps(ball.sprite);
     }
 
-    static setupAll() {
+    static setupAll(ball) {
         Robot.robots.forEach(robot => {
-            robot.setup();
+            robot.setup(ball);
         });
     }
 
@@ -96,26 +98,14 @@ class Robot {
         var pi = Math.PI;
         let angle = this.sprite.rotation * (pi/180);
 
-        this.frontDribbler.remove();
-        this.frontDribbler = new Sprite(
-            this.sprite.x + Math.cos(angle - pi/2) * (this.sprite.d/2 + 20/2),
-            this.sprite.y + Math.sin(angle - pi/2) * (this.sprite.d/2 + 20/2),
-            this.dribblerWidth,
-            this.dribblerHeight
-        );
-        this.frontDribbler.overlaps(ball.sprite);
-        this.sprite.overlaps(this.frontDribbler);
+        this.frontDribbler.x = this.sprite.x + Math.cos(angle - pi/2) * (this.sprite.d/2 + this.dribblerHeight/2);
+        this.frontDribbler.y = this.sprite.y + Math.sin(angle - pi/2) * (this.sprite.d/2 + this.dribblerHeight/2);
+
         this.frontDribbler.rotation = this.sprite.rotation;
 
-        this.backDribbler.remove();
-        this.backDribbler = new Sprite(
-            this.sprite.x + Math.cos(angle + pi/2) * (this.sprite.d/2 + 20/2),
-            this.sprite.y + Math.sin(angle + pi/2) * (this.sprite.d/2 + 20/2),
-            this.dribblerWidth,
-            this.dribblerHeight
-        );
-        this.frontDribbler.overlaps(ball.sprite);
-        this.sprite.overlaps(this.backDribbler);
+        this.backDribbler.x = this.sprite.x + Math.cos(angle + pi/2) * (this.sprite.d/2 + this.dribblerHeight/2);
+        this.backDribbler.y = this.sprite.y + Math.sin(angle + pi/2) * (this.sprite.d/2 + this.dribblerHeight/2);
+
         this.backDribbler.rotation = this.sprite.rotation;
     }
 }
