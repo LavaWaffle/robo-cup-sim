@@ -25,7 +25,6 @@ class Ball {
     reset() {
         this.sprite.pos = {x: BG_WIDTH_PX/2, y: BG_HEIGHT_PX/2};
 		this.sprite.vel = {x: 0, y: 0};
-		this.sprite.acc = {x: 0, y: 0};
 		this.sprite.rotateTo(0, 15);
     }
 }

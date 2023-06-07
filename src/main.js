@@ -2,10 +2,10 @@ let bg;
 
 let ball = new Ball();
 
-let blueRobot1 = new Robot("blue", BG_WIDTH_PX/2, 185);
+let blueRobot1 = new Robot("blue", BG_WIDTH_PX-185, 185);
 let blueRobot2 = new Robot("blue", 185, 185);
-let redRobot1 = new Robot("red", BG_WIDTH_PX/2, BG_HEIGHT_PX-185);
-let redRobot2 = new Robot("red", 185, BG_HEIGHT_PX-185);
+let redRobot1 = new Robot("orange", BG_WIDTH_PX-185, BG_HEIGHT_PX-185);
+let redRobot2 = new Robot("orange", 185, BG_HEIGHT_PX-185);
 
 
 let walls = new Walls();
@@ -122,4 +122,7 @@ function drawDebugInfo() {
 	text("Last key pressed: " + key, 10, 120);
 	// draw robot index
 	text("Robot index: " + robotIndex, 10, 140);
+	var pi = Math.PI;
+	// draw robots rotations
+	text("Robot 1 rotation: " + blueRobot1.sprite.rotation.toFixed(2) * pi/180, 10, 160);
 }
