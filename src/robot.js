@@ -36,7 +36,9 @@ class Robot {
         });
     }
 
-    setup(ball) {
+    // Setup the robot
+    setup() {
+        const ball = Ball.ball;
         this.img.resize(22 * CM_TO_PX, 22 * CM_TO_PX);
         this.sprite = new Sprite(this.initialX, this.initialY);
         this.sprite.height = this.img.height;
@@ -56,12 +58,13 @@ class Robot {
         this.backDribbler.color.setAlpha(0);
     }
 
-    static setupAll(ball) {
+    static setupAll() {
         Robot.robots.forEach(robot => {
-            robot.setup(ball);
+            robot.setup();
         });
     }
 
+    // Reset robot
     reset() {
         this.sprite.pos = { x: this.initialX, y: this.initialY };
         this.sprite.vel = { x: 0, y: 0 };
@@ -74,44 +77,72 @@ class Robot {
         });
     }
 
-    onDraw(robotIndex, ball) {
+    // Update robot
+    onDraw(robotIndex) {
+        const ball = Ball.ball;
+        // Check if this robot is selected
         if (robotIndex === this.index) {
+            // Robot is selected
+            // Move robot to mouse
             if (mouse.presses()) {
                 this.sprite.moveTo(mouse, 8);
             }
-            // draw outline around selected robot
+            // Highlight selected robot
             this.sprite.text="OWO";
             this.sprite.textColor = this.teamColor === "blue" ? "red" : 'white';
             this.sprite.textSize = 30;
         } else {
+            // Robot is not selected
+            // Remove highlight
             this.sprite.text="";
         }
 
+        // Check if this robot is dribbling
         if (this.index === Robot.robotDribbling) {
+            // Robot is dribbling
             let pi = Math.PI;
             let angle = this.sprite.rotation * (pi/180);
+
+            // Check if ball is in front or back dribbler
             if (this.canFrontDribble > 0) {
+                // Ball in front dribbler
+                // Move ball in front dribbler
                 ball.sprite.x = this.sprite.x + Math.cos(angle - pi/2) * (this.sprite.d/2 + DRIBBLER_HEIGHT/2 - 2*DRIBBLER_INSET);
                 ball.sprite.y = this.sprite.y + Math.sin(angle - pi/2) * (this.sprite.d/2 + DRIBBLER_HEIGHT/2 - 2*DRIBBLER_INSET);
+            } else if (this.canBackDribble > 0) {
+                // Ball in back dribbler
+                // Move ball in back dribbler
+                ball.sprite.x = this.sprite.x + Math.cos(angle + pi/2) * (this.sprite.d/2 + DRIBBLER_HEIGHT/2 - 2*DRIBBLER_INSET);
+                ball.sprite.y = this.sprite.y + Math.sin(angle + pi/2) * (this.sprite.d/2 + DRIBBLER_HEIGHT/2 - 2*DRIBBLER_INSET);
             }
+
+            // Move ball with robot
+            ball.sprite.vel.x = 0;
+            ball.sprite.vel.y = 0;
+            this.sprite.overlaps(ball.sprite);
+        } else {
+            // Stop sprite overlapping the ball
         }
 
+        // Update debug outline
         this.sprite.debug = this.frontDribbler.overlapping(ball.sprite) || this.backDribbler.overlapping(ball.sprite);
+        // Update dribbler overlap
         this.canFrontDribble = this.frontDribbler.overlapping(ball.sprite);
         this.canBackDribble = this.backDribbler.overlapping(ball.sprite);
 
-        // rotate the player to face 90 degrees from the ball
+        // Rotate the player to face 90 degrees from the ball
         this.sprite.rotateTowards(ball.sprite, 0.1, 90);   
-        
+        // Move dribblers with robot
         this.moveDribblers();
     }
 
-    static onDrawAll(robotIndex, mouse, ball) {
+    static onDrawAll(robotIndex) {
         Robot.robots.forEach(robot => {
-            robot.onDraw(robotIndex, mouse, ball);
+            robot.onDraw(robotIndex);
         });
     }
 
+    // Move dribblers with robot
     moveDribblers() {
         let pi = Math.PI;
         let angle = this.sprite.rotation * (pi/180);
@@ -127,10 +158,10 @@ class Robot {
         this.backDribbler.rotation = this.sprite.rotation;
     }
 
+    // Set the robot that is dribbling
     dribble(robotIndex) {
         if (robotIndex === this.index) {
             if (this.canFrontDribble || this.canBackDribble) {
-                console.log("CAN DRIBBLE");
                 Robot.robotDribbling = this.index;
             }
         }

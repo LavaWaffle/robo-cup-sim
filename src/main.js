@@ -1,3 +1,4 @@
+// Create new objects an images
 let bg;
 
 let ball = new Ball();
@@ -17,12 +18,14 @@ let drawTime = 0;
 
 let robotIndex = 0;
 
+// Preload images
 function preload() {
 	bg = loadImage('./public/field.png');
 	ball.preload();
 	Robot.preloadAll();
 }
 
+// Setup sprites
 function setup() {
 	console.log("🚀 - Setup initialized - P5 is running");
 
@@ -31,26 +34,29 @@ function setup() {
 
 	ball.setup();
 
-	Robot.setupAll(ball);
+	Robot.setupAll();
 
 	walls.setup();
 	
-	blueGoal.setup(ball.sprite);
-	orangeGoal.setup(ball.sprite);
+	blueGoal.setup();
+	orangeGoal.setup();
 }
 
-// p5 WILL AUTO RUN THIS FUNCTION IF THE BROWSER WINDOW SIZE CHANGES
+// Resize canvas
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
 }
 
+// Handle keybinds
 function keyPressed() {
+	// R is reset
 	if (key === 'r') {
 		ball.reset();
 		Robot.resetAll();
 		Robot.robotDribbling = -1;
 	}
 
+	// A is change robot (left)
 	if (key === 'a' || key === 'ArrowLeft') {
 		const newIndex = robotIndex - 1;
 		if (newIndex <= -1) {
@@ -60,6 +66,7 @@ function keyPressed() {
 		}
 	}
 
+	// D is change robot (right)
 	if (key === 'd' || key === 'ArrowRight') {
 		const newIndex = robotIndex + 1;
 		if (newIndex >= Robot.robots.length) {
@@ -69,15 +76,17 @@ function keyPressed() {
 		}
 	}
 
+	// S is try to dribble the ball
 	if (key === 's') {
-		console.log("CALED");
 		Robot.dribbleAll(robotIndex);
 	}
 }
 
+// Store goals
 let blueGoals = 0;
 let orangeGoals = 0;
 
+// Draw sprites and things
 function draw() {
 	clear();
 
@@ -92,7 +101,7 @@ function draw() {
 	fill(255, 165, 0);
 	text("Orange: " + orangeGoals, 10, 80);
 
-	Robot.onDrawAll(robotIndex, ball);
+	Robot.onDrawAll(robotIndex);
 
 	// check if the ball is in the goal
 	if (blueGoal.onDraw(ball)) {
@@ -107,6 +116,7 @@ function draw() {
 	drawDebugInfo();
 }
 
+// Draw debug info
 function drawDebugInfo() {
 	// set origin to after simulation bg
 	translate(bg.width,0);

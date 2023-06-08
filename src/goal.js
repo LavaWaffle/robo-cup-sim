@@ -7,7 +7,9 @@ class Goal {
         this.color = color;
     }
 
-    setup(ballSprite) {
+    // Setup the goal
+    setup() {
+        const ballSprite = Ball.ball.sprite;
         // goal walls
         if (this.color === 'blue') {
             this.walls = new Sprite(190, 0, [[0, 38], [5, 0], [0, -(38-15)], [190, 0], [0, 38-15], [5, 0], [0, -38]], 'static');
@@ -23,7 +25,9 @@ class Goal {
         ballSprite.overlaps(this.area);
     }
 
-    onDraw(ball) {
+    // Update the goal (return true if ball is in goal)
+    onDraw() {
+        const ball = Ball.ball;
         if (ball.sprite.overlaps(this.area)) {
             ball.reset();
             return true;
