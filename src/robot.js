@@ -14,6 +14,7 @@ class Robot {
     backDribbler;
     canFrontDribble;
     canBackDribble;
+    canSeeBall;
     constructor(color, x, y) {
         this.teamColor = color;
         this.initialX = x;
@@ -126,7 +127,7 @@ class Robot {
         }
 
         // Update debug outline
-        this.sprite.debug = this.frontDribbler.overlapping(ball.sprite) || this.backDribbler.overlapping(ball.sprite);
+        this.sprite.debug = this.canSeeBall;
         // Update dribbler overlap
         this.canFrontDribble = this.frontDribbler.overlapping(ball.sprite);
         this.canBackDribble = this.backDribbler.overlapping(ball.sprite);

@@ -36,6 +36,8 @@ function setup() {
 
 	Robot.setupAll();
 
+	ball.setupAfterRobots();
+
 	walls.setup();
 	
 	blueGoal.setup();
@@ -106,6 +108,7 @@ function draw() {
 	text("Orange: " + orangeGoals, 10, 80);
 
 	Robot.onDrawAll(robotIndex);
+	ball.onDraw();
 
 	// check if the ball is in the goal
 	if (blueGoal.onDraw(ball)) {
