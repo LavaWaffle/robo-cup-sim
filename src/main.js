@@ -53,7 +53,7 @@ function keyPressed() {
 	if (key === 'r') {
 		ball.reset();
 		Robot.resetAll();
-		Robot.robotDribbling = -1;
+		Robot.stopAnyDribbling();
 	}
 
 	// A is change robot (left)
@@ -79,6 +79,10 @@ function keyPressed() {
 	// S is try to dribble the ball
 	if (key === 's') {
 		Robot.dribbleAll(robotIndex);
+	}
+
+	if (key === 'w') {
+		Robot.stopAnyDribbling();
 	}
 }
 

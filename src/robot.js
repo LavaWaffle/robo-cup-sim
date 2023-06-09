@@ -122,6 +122,7 @@ class Robot {
             this.sprite.overlaps(ball.sprite);
         } else {
             // Stop sprite overlapping the ball
+            this.sprite.collides(ball.sprite);
         }
 
         // Update debug outline
@@ -171,5 +172,17 @@ class Robot {
         Robot.robots.forEach(robot => {
             robot.dribble(robotIndex);
         })
+    }
+
+    // Stop this robot dribbling (only if this robot is dribbling)
+    stopDribbling() {
+        if (this.index === Robot.robotDribbling) {
+            Robot.robotDribbling = -1;
+        }
+    }
+
+    // Stop any robot dribbling
+    static stopAnyDribbling() {
+        Robot.robotDribbling = -1;
     }
 }
