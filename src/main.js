@@ -49,6 +49,27 @@ function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
 }
 
+function mouseWheel(event) {
+	if (event.delta < 0) {
+		Robot.robots[robotIndex].sprite.rotation += 45;
+	} else if (event.delta > 0) {
+		Robot.robots[robotIndex].sprite.rotation -= 45;
+	}
+}
+
+function mousePressed(event) {
+	if (mouseButton === RIGHT) {
+		Robot.robots[robotIndex].sprite.rotation = 0;
+	}
+	if (mouseButton === LEFT) {
+		if (Robot.robotDribbling === -1) {
+			Robot.dribbleAll(robotIndex);
+		} else {
+			Robot.stopAnyDribbling();
+		}
+	}
+}
+
 // Handle keybinds
 function keyPressed() {
 	// R is reset
@@ -86,6 +107,39 @@ function keyPressed() {
 	if (key === 'w') {
 		Robot.stopAnyDribbling();
 	}
+
+	let speed = 0;
+	let angle = Robot.robots[robotIndex].sprite.rotation;
+
+	if (kb.pressing("j") && kb.pressing("i")) {
+		// J and I is rotate robot
+		speed = 0.5;
+		angle = -135;
+	} else if (kb.pressing("j") && kb.pressing("k")) {
+		speed = 0.5;
+		angle = 135;
+	} else if (kb.pressing("l") && kb.pressing("i")) {
+		speed = 0.5;
+		angle = -45;
+	} else if (kb.pressing("l") && kb.pressing("k")) {
+		speed = 0.5;
+		angle = 45;
+	}  else if (kb.pressing("j")) {
+		// J is rotate robot
+		speed = 0.5;
+		angle = -180;
+	} else if (kb.pressing("l")) {
+		speed = 0.5;
+		angle = 0;
+	} else if (kb.pressing("i")) {
+		speed = 0.5;
+		angle = -90;
+	} else if (kb.pressing("k")) {
+		speed = 0.5;
+		angle = 90;
+	}
+
+	Robot.robots[robotIndex].drive(angle, speed);
 }
 
 // Store goals
@@ -109,6 +163,7 @@ function draw() {
 
 	Robot.onDrawAll(robotIndex);
 	ball.onDraw();
+	blueRobot2.drive(0, 0);
 
 	// check if the ball is in the goal
 	if (blueGoal.onDraw(ball)) {
@@ -143,9 +198,8 @@ function drawDebugInfo() {
 	text("Ball: " + ball.sprite.x.toFixed(2) + ", " + ball.sprite.y.toFixed(2), 10, 100);
 	// draw last key pressed
 	text("Last key pressed: " + '"' + key + '"', 10, 120);
+	// draw key code
+	text("Key code: " + keyCode, 10, 160);
 	// draw robot index
 	text("Robot index: " + robotIndex, 10, 140);
-	var pi = Math.PI;
-	// draw robots rotations
-	text("Robot 1 rotation: " + blueRobot1.sprite.rotation.toFixed(2) * pi/180, 10, 160);
 }

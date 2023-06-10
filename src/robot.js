@@ -1,6 +1,8 @@
 DRIBBLER_WIDTH = 30;
 DRIBBLER_HEIGHT = 10;
 DRIBBLER_INSET = 5;
+
+MAX_SPEED = 10;
 class Robot {
     static robots = [];
     static robotDribbling = -1;
@@ -48,6 +50,8 @@ class Robot {
         this.sprite.color = 'pink';
         this.sprite.addImage(this.img);
         this.sprite.rotation = radians(90);
+        this.sprite.rotationDrag = 1;
+        this.sprite.friction = 1;
         // IGNORE THE X Y COORDS OF THE DRIBBLERS, JUST RANDO VALUES
         this.frontDribbler = new Sprite(this.initialX + 0, this.initialY + -35, DRIBBLER_WIDTH, DRIBBLER_HEIGHT);
         this.sprite.overlaps(this.frontDribbler);
@@ -84,10 +88,6 @@ class Robot {
         // Check if this robot is selected
         if (robotIndex === this.index) {
             // Robot is selected
-            // Move robot to mouse
-            if (mouse.presses()) {
-                this.sprite.moveTo(mouse, 8);
-            }
             // Highlight selected robot
             this.sprite.text="OWO";
             this.sprite.textColor = this.teamColor === "blue" ? "red" : 'white';
@@ -133,7 +133,7 @@ class Robot {
         this.canBackDribble = this.backDribbler.overlapping(ball.sprite);
 
         // Rotate the player to face 90 degrees from the ball
-        this.sprite.rotateTowards(ball.sprite, 0.1, 90);   
+        // this.sprite.rotateTowards(ball.sprite, 0.1, 90);
         // Move dribblers with robot
         this.moveDribblers();
     }
@@ -185,5 +185,25 @@ class Robot {
     // Stop any robot dribbling
     static stopAnyDribbling() {
         Robot.robotDribbling = -1;
+    }
+
+    /**
+     * Drive the robot in a direction at a speed
+     * @param {number} direction degrees
+     * @param {number} speed percent [0.0, 1.0]
+     */
+    drive(direction, speed) {
+        // Clamp speed between 1 and 0
+        speed = Math.max(Math.min(speed, 1.0), 0.0);
+        this.sprite.direction = direction;
+        this.sprite.speed = speed * MAX_SPEED;
+    }
+
+    /**
+     * Rotate the robot to a certain angle
+     * @param {number} angle degrees
+     */
+    rotate(angle) {
+        this.sprite.rotation = angle;
     }
 }
